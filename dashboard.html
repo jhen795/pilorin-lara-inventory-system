@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<link rel="stylesheet" href="css/dashboard.css">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Dashboard</h2>
+    <ul>
+      <li><a href="dashboard.html" class="active"></i>Dashboard</a></li>
+      <li><a href="additem.html"></i>Add Item</a></li>
+      <li><a href="edititem.html"></i>Edit Item</a></li>
+      <li><a href="deleteitem.html"></i>Delete Item</a></li>
+      <li><a href="login.html"></i>Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <section>
+      <h2>Welcome User!</h2>
+      <p>This is where you can manage your items.</p>
+      <table id="itemTable">
+        <thead>
+          <tr>
+            <th>Item ID</th>
+            <th>Item Name</th>
+            <th>Price</th>
+            <th>Quantity</th> <!-- New column for Quantity -->
+          </tr>
+        </thead>
+        <tbody id="itemTableBody">
+          <!-- Existing or initially empty rows will be added dynamically -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    // Function to update dashboard table in dashboard.html
+    function updateDashboardTable() {
+      // Retrieve items from localStorage
+      var items = JSON.parse(localStorage.getItem("items")) || [];
+
+      // Get the table body element
+      var tableBody = document.getElementById("itemTableBody");
+
+      // Clear existing table rows
+      tableBody.innerHTML = "";
+
+      // Loop through items and create table rows
+      items.forEach(function(item, index) {
+        var row = tableBody.insertRow();
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${item.name}</td>
+          <td>$${item.price}</td>
+          <td>${item.quantity}</td> <!-- Display item quantity -->
+        `;
+      });
+    }
+
+    // Call updateDashboardTable when the page loads to populate the table with existing items
+    document.addEventListener("DOMContentLoaded", function() {
+      updateDashboardTable();
+    });
+  </script>
+
+</div>
+
+</body>
+</html>

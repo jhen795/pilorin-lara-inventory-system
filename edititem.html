@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Item</title>
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<script>
+  // Function to initialize the edit form with item details
+  function initializeEdit(itemId) {
+    // Retrieve items from localStorage
+    var items = JSON.parse(localStorage.getItem("items")) || [];
+
+    // Find the item to edit based on itemId
+    var itemToEdit = items.find(function(item) {
+      return item.id == itemId;
+    });
+
+    if (!itemToEdit) {
+      alert("Item not found for editing.");
+      return;
+    }
+
+    // Set values in the edit form
+    document.getElementById("editItemId").value = itemToEdit.id;
+    document.getElementById("editItemName").value = itemToEdit.name;
+    document.getElementById("editItemPrice").value = itemToEdit.price;
+    document.getElementById("editItemQuantity").value = itemToEdit.quantity; // Populate quantity field
+  }
+
+  // Function to update item details after editing
+  function editItem() {
+    var editItemId = document.getElementById("editItemId").value;
+    var editItemName = document.getElementById("editItemName").value;
+    var editItemPrice = document.getElementById("editItemPrice").value;
+    var editItemQuantity = document.getElementById("editItemQuantity").value;
+
+    // Retrieve items from localStorage
+    var items = JSON.parse(localStorage.getItem("items")) || [];
+
+    // Find the index of the item to edit
+    var index = items.findIndex(function(item) {
+      return item.id == editItemId;
+    });
+
+    if (index === -1) {
+      alert("Item not found for editing.");
+      return;
+    }
+
+    // Update item details
+    items[index].name = editItemName;
+    items[index].price = editItemPrice;
+    items[index].quantity = editItemQuantity; // Update quantity
+
+    // Save updated items back to localStorage
+    localStorage.setItem("items", JSON.stringify(items));
+
+    // Optionally, you can inform the user that the item was edited successfully
+    alert("Item edited successfully!");
+
+    // Update the dashboard table on dashboard.html
+    updateDashboardTable();
+  }
+
+  // Function to update dashboard table in dashboard.html
+  function updateDashboardTable() {
+    // Retrieve items from localStorage
+    var items = JSON.parse(localStorage.getItem("items")) || [];
+
+    // Get the table body element
+    var tableBody = document.getElementById("itemTableBody");
+
+    // Clear existing table rows
+    tableBody.innerHTML = "";
+
+    // Loop through items and create table rows
+    items.forEach(function(item, index) {
+      var row = tableBody.insertRow();
+      row.innerHTML = `
+        <td>${item.id}</td>
+        <td>${item.name}</td>
+        <td>$${item.price}</td>
+        <td>${item.quantity}</td>
+        <td><button onclick="initializeEdit('${item.id}')">Edit</button></td>
+      `;
+    });
+  }
+
+  // Call updateDashboardTable when the page loads to populate the table with existing items
+  document.addEventListener("DOMContentLoaded", function() {
+    updateDashboardTable();
+  });
+</script>
+</head>
+<body>
+
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Dashboard</h2>
+    <ul>
+      <li><a href="dashboard.html"></i>Dashboard</a></li>
+      <li><a href="additem.html"></i>Add Item</a></li>
+      <li><a href="edititem.html" class="active"></i>Edit Item</a></li>
+      <li><a href="deleteitem.html"></i>Delete Item</a></li>
+      <li><a href="login.html"></i>Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header>
+      <button class="menu-toggle">&#9776; Menu</button>
+    </header>
+    <section>
+      <h2>Edit Item</h2>
+
+      <form onsubmit="editItem(); return false;">
+        <input type="hidden" id="editItemId" name="editItemId">
+
+        <label for="editItemName">Item Name:</label>
+        <input type="text" id="editItemName" name="editItemName" required><br><br>
+
+        <label for="editItemPrice">Price:</label>
+        <input type="text" id="editItemPrice" name="editItemPrice" required><br><br>
+
+        <label for="editItemQuantity">Quantity:</label>
+        <input type="number" id="editItemQuantity" name="editItemQuantity" required><br><br>
+
+        <button type="submit">Save Changes</button>
+      </form>
+    </section>
+
+    <!-- Table to display added items -->
+    <section>
+      <table id="itemTable">
+        <thead>
+          <tr>
+            <th>Item ID</th>
+            <th>Item Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="itemTableBody">
+          <!-- Table rows will be added dynamically -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+</div>
+
+</body>
+</html>

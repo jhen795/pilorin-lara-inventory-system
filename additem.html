@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Item</title>
+<link rel="stylesheet" href="css/dashboard.css">
+
+<script>
+  function addItem() {
+    // Get form values
+    var itemName = document.getElementById("itemName").value;
+    var itemPrice = document.getElementById("itemPrice").value;
+    var itemQuantity = document.getElementById("itemQuantity").value;
+
+    // Validate input (you can add more validation as needed)
+    if (!itemName || !itemPrice || !itemQuantity) {
+      alert("Please enter item name, price, and quantity.");
+      return;
+    }
+
+    // Construct new item object
+    var newItem = {
+      id: new Date().getTime(), // Unique ID based on timestamp (not ideal for production, use UUID for better uniqueness)
+      name: itemName,
+      price: itemPrice,
+      quantity: itemQuantity  // Include quantity in the item object
+    };
+
+    // Retrieve existing items from localStorage or initialize an empty array
+    var items = JSON.parse(localStorage.getItem("items")) || [];
+
+    // Add new item to the array
+    items.push(newItem);
+
+    // Save updated items back to localStorage
+    localStorage.setItem("items", JSON.stringify(items));
+
+    console.log("Item added to localStorage:", newItem);
+
+    // Clear form fields after adding item
+    document.getElementById("itemName").value = "";
+    document.getElementById("itemPrice").value = "";
+    document.getElementById("itemQuantity").value = "";
+
+    // Update the dashboard table on dashboard.html if it's open
+    updateDashboardTable();
+
+    // Optionally, you can inform the user that the item was added successfully
+    alert("Item added successfully!");
+  }
+
+  // Function to update dashboard table in dashboard.html
+  function updateDashboardTable() {
+    // Retrieve items from localStorage
+    var items = JSON.parse(localStorage.getItem("items")) || [];
+
+    console.log("Items retrieved from localStorage:", items);
+
+    // Get the table body element
+    var tableBody = document.getElementById("itemTableBody");
+
+    // Clear existing table rows
+    tableBody.innerHTML = "";
+
+    // Loop through items and create table rows
+    items.forEach(function(item, index) {
+      var row = tableBody.insertRow();
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${item.name}</td>
+        <td>$${item.price}</td>
+        <td>${item.quantity}</td>
+      `;
+    });
+
+    console.log("Dashboard table updated successfully.");
+  }
+
+  // Call updateDashboardTable when the page loads to populate the table with existing items
+  document.addEventListener("DOMContentLoaded", function() {
+    updateDashboardTable();
+  });
+</script>
+</head>
+<body>
+
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Dashboard</h2>
+    <ul>
+      <li><a href="dashboard.html"></i>Dashboard</a></li>
+      <li><a href="additem.html" class="active"></i>Add Item</a></li>
+      <li><a href="edititem.html"></i>Edit Item</a></li>
+      <li><a href="deleteitem.html"></i>Delete Item</a></li>
+      <li><a href="login.html"></i>Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header>
+      <button class="menu-toggle">&#9776; Menu</button>
+    </header>
+    <section>
+      <h2>Add New Item</h2>
+
+      <form onsubmit="addItem(); return false;">
+        <label for="itemName">Item Name:</label>
+        <input type="text" id="itemName" name="itemName" required><br><br>
+
+        <label for="itemPrice">Price:</label>
+        <input type="text" id="itemPrice" name="itemPrice" required><br><br>
+
+        <label for="itemQuantity">Quantity:</label>
+<input type="number" id="itemQuantity" name="itemQuantity" required><br><br>
+
+        <button type="submit">Add Item</button>
+      </form>
+    </section>
+
+    <!-- Table to display added items -->
+    <section>
+      <table id="itemTable">
+        <thead>
+          <tr>
+            <th>Item ID</th>
+            <th>Item Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+          </tr>
+        </thead>
+        <tbody id="itemTableBody">
+          <!-- Existing or initially empty rows will be added dynamically -->
+        </tbody>
+      </table>
+    </section>
+    
+  </main>
+
+  <script>
+    // Call updateDashboardTable when the page loads to populate the table with existing items
+    document.addEventListener("DOMContentLoaded", function() {
+      updateDashboardTable();
+    });
+  </script>
+
+</div>
+
+</body>
+</html>
